@@ -87,10 +87,15 @@ namespace LAS {
         int repeatInterval;
     };
 
+    extern Task schedule[SCHEDULE_SIZE];
+
     int determineFirstFreeIndex(Task array[], int length);
-    void scheduleAt(void (*func)(), long triggerTime = 0, bool repeat = false, int repeatIntervall = 0);
+    void scheduleAt(void (*func)(), long triggerTime = ASAP, bool repeat = false, int repeatIntervall = 0);
     void scheduleIn(void (*func)(), long triggerDelay);
     void scheduleRepeated(void (*func)(), int repeatInterval);
     void printWelcome();
+    Task getTask(int index);
+    char* taskToCharStr(Task task);
+    char* scheduleToCharStr(); //WARNING: VERY MEMORY HUNGRY, WILL PROBABLY CRASH YOUR ARDUINO
     void runScheduler();
 }

@@ -72,4 +72,25 @@ namespace LAS {
             }
         }
     }
+
+    char* taskToCharStr(Task task) {
+            static char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
+            snprintf(buffer, sizeof(buffer), "Task:\n  isActive: %d\n  func: %p\n  triggerTime: %d\n  repeat: %d\n  repeatInterval: %d",
+            task.isActive, task.func, task.triggerTime, task.repeat, task.repeatInterval);
+            return buffer;
+}
+    char* scheduleToCharStr(){
+      static char buffer[INTERNAL_CHAR_STR_SIZE_UNIT*SCHEDULE_SIZE];
+      for(int index=0;index<SCHEDULE_SIZE;index++){
+        static char indexBuffer[3];
+        snprintf(indexBuffer, sizeof(buffer), "\n%d:\n", index);
+        strcat(buffer, indexBuffer);
+        strcat(buffer, taskToCharStr(schedule[index]));
+      }
+      return buffer;
+    }
+
+    Task getTask(int index){
+      return schedule[index];
+    }
 }
