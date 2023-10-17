@@ -48,6 +48,7 @@ namespace LAS {
         Serial.println("    \\/___/   \\/_/\\/_/\\/_____/");
         Serial.println("");
         Serial.println("Lukacho's Amazing Scheduler - alpha v0.2.0 - now with repeats!");
+        Serial.println();
     }
 
     void runScheduler() {
@@ -61,6 +62,10 @@ namespace LAS {
                 if ((currentTask.isActive) &&
                   (currentTask.func != NULL) && 
                 (currentTask.triggerTime <= millis())) {
+
+                  if(millis()-currentTask.triggerTime >= CRITICAL_LAG_MS && currentTask.triggerTime != 0){
+                    Serial.println("WARNING: SCHEDULER IS FALLING BEHIND CRITICALLY!");
+                  }
                   
                     currentTask.func();
                     if(currentTask.repeat){
