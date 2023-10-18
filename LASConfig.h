@@ -6,3 +6,4 @@
 #define INTERNAL_CHAR_STR_SIZE_UNIT 128
 
 #define ASAP 0
+#define ENDLESS_LOOP -1

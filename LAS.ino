@@ -8,7 +8,7 @@ void testFunc(){
 
 void setup() {
   Serial.println("Serial test");
-  scheduleAt(testFunc, true);
+  scheduleFunction(testFunc, ASAP);
   runScheduler();
 }
 
