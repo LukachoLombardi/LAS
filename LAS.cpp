@@ -61,7 +61,6 @@ void printWelcome() {
   Serial.println();
 }
 void runScheduler() {
-  Serial.begin(FALLBACK_BAUDRATE);
   Serial.println("starting scheduler...");
   printWelcome();
   if (schedule[0].isActive) {

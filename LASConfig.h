@@ -4,10 +4,6 @@
 #define SCHEDULE_SIZE 16
 #endif
 
-#ifndef FALLBACK_BAUDRATE
-#define FALLBACK_BAUDRATE 9600
-#endif
-
 #ifndef CRITICAL_LAG_MS
 #define CRITICAL_LAG_MS 500
 #endif
