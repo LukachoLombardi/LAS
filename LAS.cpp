@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "LAS.h"
 #include <Arduino.h>
 #include "LASConfig.h"
@@ -63,14 +62,15 @@ void printWelcome() {
   Serial.println("Lukacho's Amazing Scheduler - alpha - now with repeats!");
   Serial.println();
 }
-void runScheduler() {
-  Serial.println("starting scheduler...");
+void schedulerInit(Logger logger) {
+  logger = logger;
+  logger.printline("starting scheduler...");
   printWelcome();
   if (schedule[0].isActive) {
-    Serial.println("WARNING: Please consider adding initial Tasks through an ASAP Task for high precision apps");
+    logger.printline("Please consider adding initial Tasks through an ASAP Task for high precision apps", logger.LogLevel::Warning);
   }
   if (activeTaskIndex != 0) {
-    Serial.println("FATAL: ACTIVETASKINDEX != 0. THERE MIGHT BE ANOTHER SCHEDULER ALREADY RUNNING!");
+    logger.printline("FACTIVETASKINDEX != 0. THERE MIGHT BE ANOTHER SCHEDULER ALREADY RUNNING!", logger.LogLevel::Severe);
   }
   while (true) {
     for (int index = 0; index < SCHEDULE_SIZE; index++) {
@@ -81,7 +81,7 @@ void runScheduler() {
           (currentTask.triggerTime <= millis())) {
 
         if (millis() - currentTask.triggerTime >= CRITICAL_LAG_MS && currentTask.triggerTime != 0) {
-          Serial.println("WARNING: SCHEDULER IS FALLING BEHIND CRITICALLY!");
+          logger.printline("SCHEDULER IS FALLING BEHIND CRITICALLY!", logger.LogLevel::Warning);
         }
 
         currentTask.func();
@@ -101,6 +101,12 @@ void runScheduler() {
       }
     }
   }
+}
+
+void schedulerInit(){
+  Logger tempLogger = Logger();
+  tempLogger.init(&Serial);
+  return schedulerInit(tempLogger);
 }
 
 char* taskToCharStr(Task task) {
@@ -126,8 +132,10 @@ Task getTask(int index) {
 
 void printSchedule() {
   for (int index = 0; index < SCHEDULE_SIZE; index++) {
-    Serial.print(index); Serial.print(":\n");
-    Serial.println(taskToCharStr(schedule[index]));
+    char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
+    strcat(buffer, ":\n");
+    logger.printline(buffer);
+    logger.printline(taskToCharStr(schedule[index]));
   }
 }
 }

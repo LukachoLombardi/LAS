@@ -4,7 +4,6 @@
 #include <Logger.h>
 
 namespace LAS {
-#include "LASConfig.h"
 
 struct Task {
   bool isActive;     //whether or not a Task is actively maintained. inactive tasks are invalid and can be deleted or overwritten at any time.
@@ -18,6 +17,7 @@ struct Task {
 
 extern Task schedule[SCHEDULE_SIZE];
 extern int activeTaskIndex;
+extern Logger logger;
 
 int getActiveTaskIndex();
 Task getActiveTask();
@@ -31,5 +31,6 @@ void printWelcome();
 char* taskToCharStr(Task task);
 char* scheduleToCharStr();  //WARNING: VERY MEMORY HUNGRY, WILL PROBABLY CRASH YOUR ARDUINO
 void printSchedule();
-void runScheduler();
+void schedulerInit(Logger logger);
+void schedulerInit();
 }
