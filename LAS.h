@@ -21,7 +21,6 @@ Task getActiveTask();
 Task getTask(int index);
 
 int determineFirstFreeIndex(Task array[], int length);
-template <typename... Args>
 void scheduleFunction(void (*func)(), long triggerTime = ASAP, bool repeat = false, int repeatIntervall = 0, int remainingRepeats = -1);
 void scheduleIn(void (*func)(), long triggerDelay);
 void scheduleRepeated(void (*func)(), int repeatInterval = ASAP, int repeats = -1);
