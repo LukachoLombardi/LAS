@@ -1,4 +1,7 @@
 #pragma once
+#include <Arduino.h>
+#include "LASConfig.h"
+#include <Logger.h>
 
 namespace LAS {
 #include "LASConfig.h"
