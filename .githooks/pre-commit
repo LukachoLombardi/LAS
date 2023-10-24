@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Path to your C++ header file
+HEADER_FILE="Version.h"
+
+# Extract the version macro from the header file
+CURRENT_VERSION=$(grep -oP "(?<=#define LAS_VERSION )\d+\.\d+\.\d+" "$HEADER_FILE")
+
+if [ -n "$CURRENT_VERSION" ]; then
+  # Split the version into major, minor, and patch components
+  IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+  
+  # Increment the third version number
+  NEW_PATCH_VERSION=$((VERSION_PARTS[2] + 1))
+  
+  # Construct the new version
+  NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$NEW_PATCH_VERSION"
+  
+  # Replace the old version with the new version in the header file
+
+echo "#define LAS_VERSION $NEW_VERSION" > $HEADER_FILE
+  
+  echo "Incremented version from $CURRENT_VERSION to $NEW_VERSION in $HEADER_FILE."
+fi
+
+git add $HEADER_FILE
+
+
+exit 0

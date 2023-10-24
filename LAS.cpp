@@ -1,6 +1,8 @@
 #include "LAS.h"
+
 #include <Arduino.h>
 #include "LASConfig.h"
+#include "Version.h"
 #include <Logger.h>
 
 namespace LAS {
@@ -68,7 +70,7 @@ void printWelcome() {
   Serial.println("   \\ \\____/ \\ \\_\\ \\_\\ `\\____\\\\");
   Serial.println("    \\/___/   \\/_/\\/_/\\/_____/");
   Serial.println("");
-  Serial.println("Lukacho's Amazing Scheduler - alpha - now with repeats!");
+  Serial.print("Lukacho's Amazing Scheduler - alpha "); Serial.print("LAS_VERSION"); Serial.println(" - now with repeats!");
   Serial.println();
 }
 void startScheduler() {
