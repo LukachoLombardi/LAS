@@ -12,6 +12,8 @@ Task schedule[SCHEDULE_SIZE] = { Task{
   0 } };
 
 int activeTaskIndex = 0;
+bool schedulerInitialized = false;
+Logger logger;
 
 int getActiveTaskIndex() {
   return activeTaskIndex;
@@ -30,6 +32,10 @@ int determineFirstInactiveIndex(Task array[], int length) {
 }
 
 void scheduleFunction(void (*func)(), long triggerTime, bool repeat, int repeatInterval, int remainingRepeats) {
+  if(!schedulerInitialized){
+    Serial.println("SCHEDULER/LOGGER NOT INITIALIZED. RUN initScheduler() FIRST!");
+    return;
+  }
   Task newTask = Task{
     true,
     func,
@@ -65,9 +71,12 @@ void printWelcome() {
   Serial.println("Lukacho's Amazing Scheduler - alpha - now with repeats!");
   Serial.println();
 }
-void schedulerInit(Logger logger) {
-  logger = logger;
+void startScheduler() {
   logger.printline("starting scheduler...");
+  if(!schedulerInitialized){
+    Serial.println("SCHEDULER/LOGGER NOT INITIALIZED. RUN initScheduler() FIRST!");
+    return;
+  }
   printWelcome();
   if (schedule[0].isActive) {
     logger.printline("Please consider adding initial Tasks through an ASAP Task for high precision apps", logger.LogLevel::Warning);
@@ -109,11 +118,18 @@ void schedulerInit(Logger logger) {
   }
 }
 
-void schedulerInit() {
+void initScheduler(Logger logger) {
+  logger = logger;
+  schedulerInitialized = true;
+  logger.printline("logger initialized");
+}
+
+void initScheduler() {
   Logger tempLogger = Logger();
   tempLogger.init(&Serial);
-  return schedulerInit(tempLogger);
+  initScheduler(tempLogger);
 }
+
 
 char* taskToCharStr(Task task) {
   static char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];

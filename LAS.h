@@ -18,6 +18,7 @@ struct Task {
 extern Task schedule[SCHEDULE_SIZE];
 extern int activeTaskIndex;
 extern Logger logger;
+extern bool schedulerInitialized;
 
 int getActiveTaskIndex();
 Task getActiveTask();
@@ -31,6 +32,7 @@ void printWelcome();
 char* taskToCharStr(Task task);
 char* scheduleToCharStr();  //WARNING: VERY MEMORY HUNGRY, WILL PROBABLY CRASH YOUR ARDUINO
 void printSchedule();
-void schedulerInit(Logger logger);
-void schedulerInit();
+void initScheduler(Logger logger);
+void initScheduler();
+void startScheduler();
 }
