@@ -4,20 +4,19 @@
 #include <Logger.h>
 
 namespace LAS {
-Task schedule[SCHEDULE_SIZE] = {Task{
-    false,
-    NULL,
-    0,
-    false,
-    0}
-};
+Task schedule[SCHEDULE_SIZE] = { Task{
+  false,
+  NULL,
+  0,
+  false,
+  0 } };
 
 int activeTaskIndex = 0;
 
-int getActiveTaskIndex(){
+int getActiveTaskIndex() {
   return activeTaskIndex;
 }
-Task getActiveTask(){
+Task getActiveTask() {
   return getTask(activeTaskIndex);
 }
 
@@ -31,7 +30,7 @@ int determineFirstInactiveIndex(Task array[], int length) {
 }
 
 void scheduleFunction(void (*func)(), long triggerTime, bool repeat, int repeatInterval, int remainingRepeats) {
-  schedule[determineFirstInactiveIndex(schedule, SCHEDULE_SIZE)] = Task{
+  Task newTask = Task{
     true,
     func,
     triggerTime,
@@ -39,6 +38,10 @@ void scheduleFunction(void (*func)(), long triggerTime, bool repeat, int repeatI
     repeatInterval,
     remainingRepeats
   };
+  schedule[determineFirstInactiveIndex(schedule, SCHEDULE_SIZE)] = newTask;
+  char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
+  snprintf(buffer, sizeof(buffer), "scheduled func Task at %p", &newTask);
+  logger.printline(buffer, logger.LogLevel::Debug);
 }
 
 void scheduleIn(void (*func)(), long triggerDelay) {
@@ -76,34 +79,37 @@ void schedulerInit(Logger logger) {
     for (int index = 0; index < SCHEDULE_SIZE; index++) {
       activeTaskIndex = index;
       Task currentTask = schedule[index];
-      if ((currentTask.isActive) &&
-          (currentTask.func != NULL) &&
-          (currentTask.triggerTime <= millis())) {
+      if ((currentTask.isActive) && (currentTask.func != NULL) && (currentTask.triggerTime <= millis())) {
 
         if (millis() - currentTask.triggerTime >= CRITICAL_LAG_MS && currentTask.triggerTime != 0) {
           logger.printline("SCHEDULER IS FALLING BEHIND CRITICALLY!", logger.LogLevel::Warning);
-        }
+        }        
 
         currentTask.func();
         if (currentTask.repeat) {
           schedule[index].triggerTime = millis() + currentTask.repeatInterval;
+          if (currentTask.remainingRepeats != ENDLESS_LOOP) {
+            schedule[index].remainingRepeats--;
+          }
+
+          if (schedule[index].remainingRepeats == 0) {
+            schedule[index].isActive = false;
+            char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
+            snprintf(buffer, sizeof(buffer), "finished repeat Task at %p", &currentTask);
+            logger.printline(buffer, logger.LogLevel::Debug);
+          }
         } else {
           schedule[index].isActive = false;
-        }
-
-        if (currentTask.remainingRepeats != ENDLESS_LOOP) {
-          schedule[index].remainingRepeats--;
-        }
-
-        if (schedule[index].remainingRepeats == 0) {
-          schedule[index].isActive = false;
+          char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
+          snprintf(buffer, sizeof(buffer), "finished Task at %p", &currentTask);
+          logger.printline(buffer, logger.LogLevel::Debug);
         }
       }
     }
   }
 }
 
-void schedulerInit(){
+void schedulerInit() {
   Logger tempLogger = Logger();
   tempLogger.init(&Serial);
   return schedulerInit(tempLogger);
