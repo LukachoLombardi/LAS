@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef SCHEDULE_SIZE
-#define SCHEDULE_SIZE 16
+#define SCHEDULE_SIZE 8
 #endif
 
 #ifndef CRITICAL_LAG_MS

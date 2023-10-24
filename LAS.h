@@ -20,6 +20,7 @@ extern Task schedule[SCHEDULE_SIZE];
 extern int activeTaskIndex;
 extern Logger logger;
 extern bool schedulerInitialized;
+extern bool schedulerRunning;
 
 int getActiveTaskIndex();
 Task getActiveTask();

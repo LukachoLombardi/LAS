@@ -15,6 +15,7 @@ Task schedule[SCHEDULE_SIZE] = { Task{
 
 int activeTaskIndex = 0;
 bool schedulerInitialized = false;
+extern bool schedulerRunning = false;
 Logger logger;
 
 int getActiveTaskIndex() {
@@ -83,8 +84,12 @@ void startScheduler() {
   if (schedule[0].isActive) {
     logger.printline("Please consider adding initial Tasks through an ASAP Task for high precision apps", logger.LogLevel::Warning);
   }
-  if (activeTaskIndex != 0) {
-    logger.printline("FACTIVETASKINDEX != 0. THERE MIGHT BE ANOTHER SCHEDULER ALREADY RUNNING!", logger.LogLevel::Severe);
+  if (schedulerRunning) {
+    logger.printline("THERE MIGHT BE ANOTHER SCHEDULER ALREADY RUNNING!", logger.LogLevel::Severe);
+    return;
+  }
+  else{
+    schedulerRunning = true;
   }
   while (true) {
     for (int index = 0; index < SCHEDULE_SIZE; index++) {
