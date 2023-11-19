@@ -18,6 +18,16 @@ bool schedulerInitialized = false;
 extern bool schedulerRunning = false;
 Logger logger;
 
+void CallableVoidFunction::run(){
+  this->func();
+}
+CallableVoidFunction::CallableVoidFunction(void (*funcIn)()){
+  this->func = funcIn;
+}
+void Callable::operator()(){
+  return run();
+}
+
 int getActiveTaskIndex() {
   return activeTaskIndex;
 }
@@ -34,14 +44,14 @@ int determineFirstInactiveIndex(Task array[], int length) {
   return length;
 }
 
-void scheduleFunction(void (*func)(), long triggerTime, bool repeat, int repeatInterval, int remainingRepeats) {
+void scheduleFunction(Callable *callable, long triggerTime, bool repeat, int repeatInterval, int remainingRepeats) {
   if(!schedulerInitialized){
     Serial.println("SCHEDULER/LOGGER NOT INITIALIZED. RUN initScheduler() FIRST!");
     return;
   }
   Task newTask = Task{
     true,
-    func,
+    callable,
     triggerTime,
     repeat,
     repeatInterval,
@@ -49,16 +59,28 @@ void scheduleFunction(void (*func)(), long triggerTime, bool repeat, int repeatI
   };
   schedule[determineFirstInactiveIndex(schedule, SCHEDULE_SIZE)] = newTask;
   char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
-  snprintf(buffer, sizeof(buffer), "scheduled func Task at %p", &newTask);
+  snprintf(buffer, sizeof(buffer), "scheduled Task at %p", &newTask);
   logger.printline(buffer, logger.LogLevel::Debug);
+}
+
+void scheduleFunction(void (*func)(), long triggerTime, bool repeat, int repeatInterval, int remainingRepeats) {
+  scheduleFunction(new CallableVoidFunction(func), triggerTime, repeat, repeatInterval, remainingRepeats);
 }
 
 void scheduleIn(void (*func)(), long triggerDelay) {
   scheduleFunction(func, millis() + triggerDelay);
 }
 
+void scheduleIn(Callable *callable, long triggerDelay) {
+  scheduleFunction(callable, millis() + triggerDelay);
+}
+
 void scheduleRepeated(void (*func)(), int repeatInterval, int repeats) {
   scheduleFunction(func, millis() + repeatInterval, true, repeatInterval, repeats);
+}
+
+void scheduleRepeated(Callable *callable, int repeatInterval, int repeats) {
+  scheduleFunction(callable, millis() + repeatInterval, true, repeatInterval, repeats);
 }
 
 void printWelcome() {
@@ -95,13 +117,14 @@ void startScheduler() {
     for (int index = 0; index < SCHEDULE_SIZE; index++) {
       activeTaskIndex = index;
       Task currentTask = schedule[index];
-      if ((currentTask.isActive) && (currentTask.func != NULL) && (currentTask.triggerTime <= millis())) {
+      if ((currentTask.isActive) && (currentTask.callable != NULL) && (currentTask.triggerTime <= millis())) {
 
         if (millis() - currentTask.triggerTime >= CRITICAL_LAG_MS && currentTask.triggerTime != 0) {
           logger.printline("SCHEDULER IS FALLING BEHIND CRITICALLY!", logger.LogLevel::Warning);
         }        
 
-        currentTask.func();
+        currentTask.callable->run();
+
         if (currentTask.repeat) {
           schedule[index].triggerTime = millis() + currentTask.repeatInterval;
           if (currentTask.remainingRepeats != ENDLESS_LOOP) {
@@ -140,8 +163,8 @@ void initScheduler() {
 
 char* taskToCharStr(Task task) {
   static char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
-  snprintf(buffer, sizeof(buffer), "Task:\n  isActive: %d\n  func: %p\n  triggerTime: %d\n  repeat: %d\n  repeatInterval: %d",
-           task.isActive, task.func, task.triggerTime, task.repeat, task.repeatInterval);
+  snprintf(buffer, sizeof(buffer), "Task:\n  isActive: %d\n  callable: %p\n  triggerTime: %d\n  repeat: %d\n  repeatInterval: %d",
+           task.isActive, task.callable, task.triggerTime, task.repeat, task.repeatInterval);
   return buffer;
 }
 char* scheduleToCharStr() {

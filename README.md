@@ -1,11 +1,12 @@
 # LAS
 Lukacho's Amazing Scheduler! (for Arduino)
 
-LAS is a very simple and easy to use namespace based cooperative scheduler for any board that can be programmed using Arduino.h and Arduino's flavour of C++.
+LAS is a very simple and easy to use cooperative scheduler for any board that can be programmed using Arduino.h and Arduino's flavour of C++.
 
 ## What can LAS do?
 LAS can:
 - create basic, function or method based, Tasks with a variety of parameters
+- now also create tasks from contextual objects extending the "Callable" class
 - execute timed code
 - execute repeated code
 - allow you to manipulate Tasks from within their included functions for maximum control
