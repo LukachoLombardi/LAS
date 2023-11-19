@@ -18,7 +18,7 @@ if [ -n "$CURRENT_VERSION" ]; then
   
   # Replace the old version with the new version in the header file
 
-echo "#define LAS_VERSION $NEW_VERSION" > $HEADER_FILE
+echo "#define LAS_VERSION \"$NEW_VERSION\"" > $HEADER_FILE
   
   echo "Incremented version from $CURRENT_VERSION to $NEW_VERSION in $HEADER_FILE."
 fi
