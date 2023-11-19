@@ -93,7 +93,7 @@ void printWelcome() {
   Serial.println("   \\ \\____/ \\ \\_\\ \\_\\ `\\____\\\\");
   Serial.println("    \\/___/   \\/_/\\/_/\\/_____/");
   Serial.println("");
-  Serial.print("Lukacho's Amazing Scheduler - alpha "); Serial.print("LAS_VERSION"); Serial.println(" - now with repeats!");
+  Serial.print("Lukacho's Amazing Scheduler - alpha "); Serial.print(LAS_VERSION); Serial.println(" - now with repeats!");
   Serial.println();
 }
 void startScheduler() {
