@@ -21,7 +21,7 @@ all LAS functions and fields can be accessed through its namespace. LAS is fully
 - LAS::schedulerInit: Start LAS. You can pass an instance of arduLogger (or a wrapper for another logger following arduLoggers definition) or let LAS create one internally, if you prefer to use another logger for the rest of your project.
 
 - ALL OF THE ABOVE FUNCTIONS ARE NOW AVAILABLE TO BE USED WITH CALLABLES AS WELL.
-- Simply derive a class from "Callable" and override the run method with your function, then pass them as previously done as a pointer. You can also include environment variables or return pointers for your void function.
+- Simply derive a class from "Callable" and override the run method with your function, then pass an object as previously done as a pointer. You can also include environment variables or return pointers for your void function.
 
 ## Why did I even make this?
 mostly for fun, secondly for an Arduino based robot project. 
