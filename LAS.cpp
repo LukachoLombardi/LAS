@@ -44,7 +44,7 @@ int determineFirstInactiveIndex(Task array[], int length) {
   return length;
 }
 
-void scheduleFunction(Callable *callable, long triggerTime, bool repeat, int repeatInterval, int remainingRepeats) {
+void scheduleCallable(Callable *callable, long triggerTime, bool repeat, int repeatInterval, int remainingRepeats) {
   if(!schedulerInitialized){
     Serial.println("SCHEDULER/LOGGER NOT INITIALIZED. RUN initScheduler() FIRST!");
     return;
@@ -64,7 +64,7 @@ void scheduleFunction(Callable *callable, long triggerTime, bool repeat, int rep
 }
 
 void scheduleFunction(void (*func)(), long triggerTime, bool repeat, int repeatInterval, int remainingRepeats) {
-  scheduleFunction(new CallableVoidFunction(func), triggerTime, repeat, repeatInterval, remainingRepeats);
+  scheduleCallable(new CallableVoidFunction(func), triggerTime, repeat, repeatInterval, remainingRepeats);
 }
 
 void scheduleIn(void (*func)(), long triggerDelay) {
@@ -72,7 +72,7 @@ void scheduleIn(void (*func)(), long triggerDelay) {
 }
 
 void scheduleIn(Callable *callable, long triggerDelay) {
-  scheduleFunction(callable, millis() + triggerDelay);
+  scheduleCallable(callable, millis() + triggerDelay);
 }
 
 void scheduleRepeated(void (*func)(), int repeatInterval, int repeats) {
@@ -80,7 +80,7 @@ void scheduleRepeated(void (*func)(), int repeatInterval, int repeats) {
 }
 
 void scheduleRepeated(Callable *callable, int repeatInterval, int repeats) {
-  scheduleFunction(callable, millis() + repeatInterval, true, repeatInterval, repeats);
+  scheduleCallable(callable, millis() + repeatInterval, true, repeatInterval, repeats);
 }
 
 void printWelcome() {
