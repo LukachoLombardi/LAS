@@ -25,3 +25,4 @@ all LAS functions and fields can be accessed through its namespace. LAS is fully
 
 ## Why did I even make this?
 mostly for fun, secondly for an Arduino based robot project. 
+See [Philipp Räuchle](https://github.com/LukachoLombardi/PhilippRaeuchle) for more.
