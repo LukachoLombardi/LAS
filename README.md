@@ -13,6 +13,7 @@ LAS can:
 - execute repeated code
 - allow you to manipulate Tasks from within their included functions for maximum control
 - have an accuracy of 50ms> most of the time
+
 Most importantly, LAS can easily help you get rid of the pitfalls that can arise from using delays or basic millis() based timing when combined with recurring tasks.
 
 ## Basic instructions
