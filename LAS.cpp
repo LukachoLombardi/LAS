@@ -8,7 +8,7 @@
 namespace LAS {
 Task schedule[SCHEDULE_SIZE] = { Task{
   false,
-  NULL,
+  nullptr,
   0,
   false,
   0 } };
@@ -117,7 +117,7 @@ void startScheduler() {
     for (int index = 0; index < SCHEDULE_SIZE; index++) {
       activeTaskIndex = index;
       Task currentTask = schedule[index];
-      if ((currentTask.isActive) && (currentTask.callable != NULL) && (currentTask.triggerTime <= millis())) {
+      if ((currentTask.isActive) && (currentTask.callable != nullptr) && (currentTask.triggerTime <= millis())) {
 
         if (millis() - currentTask.triggerTime >= CRITICAL_LAG_MS && currentTask.triggerTime != 0) {
           logger.printline("SCHEDULER IS FALLING BEHIND CRITICALLY!", logger.LogLevel::Warning);
