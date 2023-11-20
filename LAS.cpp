@@ -192,7 +192,7 @@ Task getTask(int index) {
 void printSchedule() {
   for (int index = 0; index < SCHEDULE_SIZE; index++) {
     char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
-    strcat(buffer, ":\n");
+    sprintf(buffer, sizeof(buffer), "%d%\n:", index);
     logger.printline(buffer);
     logger.printline(taskToCharStr(schedule[index]));
   }
