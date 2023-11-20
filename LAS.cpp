@@ -167,6 +167,12 @@ void initScheduler() {
   initScheduler(tempLogger);
 }
 
+void clearSchedule(){
+  logger.printline("Clearing schedule as demanded programatically.", "warning");
+  for(int i = 0; i<SCHEDULE_SIZE;i++){
+    schedule[i] = DummyTask();
+  }
+}
 
 char* taskToCharStr(Task task) {
   static char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];

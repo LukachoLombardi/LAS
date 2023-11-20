@@ -32,6 +32,15 @@ struct Task {
   int remainingRepeats;
 };
 
+struct DummyTask: Task {
+  bool isActive = false;     //whether or not a Task is actively maintained. inactive tasks are invalid and can be deleted or overwritten at any time.
+  Callable* callable = nullptr;
+  long triggerTime = 0;  //time in millis to next trigger func
+  bool repeat = false;  //if true: adds repeatIntervall to triggerTime instead of deactivating task right before execution, creating a recurring task.
+  int repeatInterval = 0;
+  int remainingRepeats = 0;
+};
+
 extern Task schedule[SCHEDULE_SIZE];
 extern int activeTaskIndex;
 extern Logger logger;
@@ -58,4 +67,5 @@ void printSchedule();
 void initScheduler(Logger logger);
 void initScheduler();
 void startScheduler();
+void clearSchedule();
 }
