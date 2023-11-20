@@ -57,6 +57,7 @@ void scheduleCallable(Callable *callable, long triggerTime, bool repeat, int rep
     repeatInterval,
     remainingRepeats
   };
+  newTask.callable->taskPtr = &newTask;
   int freeIndex = determineFirstInactiveIndex(schedule, SCHEDULE_SIZE);
   if(freeIndex > SCHEDULE_SIZE) {
     logger.printline("SCHEDULE IS FULL! ABORTING TO AVOID UNDEFINED BEHAVIOUR.", "severe");

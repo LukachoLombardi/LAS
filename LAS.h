@@ -6,11 +6,14 @@
 
 namespace LAS {
 
+struct Task;
 class Callable {
   public:
     virtual void run() = 0;
 
     void operator()();
+
+    Task *taskPtr = nullptr; //check for nullptr to ensure correct scheduler environment
 };
 
 class CallableVoidFunction : public Callable{
