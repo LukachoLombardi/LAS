@@ -1,10 +1,5 @@
 #include "LAS.h"
 
-#include <Arduino.h>
-#include "LASConfig.h"
-#include "Version.h"
-#include <Logger.h>
-
 namespace LAS {
 Task schedule[SCHEDULE_SIZE] = { Task{
   false,
