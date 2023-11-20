@@ -41,7 +41,7 @@ int determineFirstInactiveIndex(Task array[], int length) {
       return index;
     }
   }
-  return length;
+  return length+1;
 }
 
 void scheduleCallable(Callable *callable, long triggerTime, bool repeat, int repeatInterval, int remainingRepeats) {
@@ -57,7 +57,13 @@ void scheduleCallable(Callable *callable, long triggerTime, bool repeat, int rep
     repeatInterval,
     remainingRepeats
   };
-  schedule[determineFirstInactiveIndex(schedule, SCHEDULE_SIZE)] = newTask;
+  int freeIndex = determineFirstInactiveIndex(schedule, SCHEDULE_SIZE);
+  if(freeIndex > SCHEDULE_SIZE) {
+    logger.printline("SCHEDULE IS FULL! ABORTING TO AVOID UNDEFINED BEHAVIOUR.", "severe");
+    //abort
+    while(true);
+  }
+  schedule[freeIndex] = newTask;
   char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
   snprintf(buffer, sizeof(buffer), "scheduled Task at %p", &newTask);
   logger.printline(buffer, logger.LogLevel::Debug);
