@@ -61,7 +61,7 @@ void scheduleCallable(Callable *callable, long triggerTime, bool repeat, int rep
   }
   schedule[freeIndex] = newTask;
   char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
-  snprintf(buffer, sizeof(buffer), "scheduled Task at %p", &newTask);
+  snprintf(buffer, sizeof(buffer), "scheduled Task at %p", &schedule[freeIndex]);
   logger.printline(buffer, logger.LogLevel::Debug);
 }
 
@@ -136,13 +136,13 @@ void startScheduler() {
           if (schedule[index].remainingRepeats == 0) {
             schedule[index].isActive = false;
             char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
-            snprintf(buffer, sizeof(buffer), "finished repeat Task at %p", &currentTask);
+            snprintf(buffer, sizeof(buffer), "finished repeat Task at %p", &schedule[index]);
             logger.printline(buffer, logger.LogLevel::Debug);
           }
         } else {
           schedule[index].isActive = false;
           char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
-          snprintf(buffer, sizeof(buffer), "finished Task at %p", &currentTask);
+          snprintf(buffer, sizeof(buffer), "finished Task at %p", &schedule[index]);
           logger.printline(buffer, logger.LogLevel::Debug);
         }
       }
@@ -158,7 +158,6 @@ void initScheduler(Logger logger) {
 
 void initScheduler() {
   Logger tempLogger = Logger();
-  tempLogger.init(&Serial);
   initScheduler(tempLogger);
 }
 
@@ -193,7 +192,7 @@ Task getTask(int index) {
 void printSchedule() {
   for (int index = 0; index < SCHEDULE_SIZE; index++) {
     char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
-    sprintf(buffer, sizeof(buffer), "%d%\n:", index);
+    snprintf(buffer, sizeof(buffer), "%d%\n:", index);
     logger.printline(buffer);
     logger.printline(taskToCharStr(schedule[index]));
   }
