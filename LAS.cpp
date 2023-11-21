@@ -169,10 +169,10 @@ void clearSchedule(){
   }
 }
 
-char* taskToCharStr(Task task) {
+char* taskToCharStr(Task *task) {
   static char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
-  snprintf(buffer, sizeof(buffer), "Task:\n  isActive: %d\n  callable: %p\n  triggerTime: %d\n  repeat: %d\n  repeatInterval: %d",
-           task.isActive, task.callable, task.triggerTime, task.repeat, task.repeatInterval);
+  snprintf(buffer, sizeof(buffer), "Task %p:\n  isActive: %d\n  callable: %p\n  triggerTime: %d\n  repeat: %d\n  repeatInterval: %d",
+           task, task->isActive, task->callable, task->triggerTime, task->repeat, task->repeatInterval);
   return buffer;
 }
 char* scheduleToCharStr() {
@@ -181,7 +181,7 @@ char* scheduleToCharStr() {
     static char indexBuffer[3];
     snprintf(indexBuffer, sizeof(buffer), "\n%d:\n", index);
     strcat(buffer, indexBuffer);
-    strcat(buffer, taskToCharStr(schedule[index]));
+    strcat(buffer, taskToCharStr(&schedule[index]));
   }
   return buffer;
 }
@@ -193,9 +193,9 @@ Task getTask(int index) {
 void printSchedule() {
   for (int index = 0; index < SCHEDULE_SIZE; index++) {
     char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
-    snprintf(buffer, sizeof(buffer), "%d%\n:", index);
+    snprintf(buffer, sizeof(buffer), "%d\n:", index);
     logger.printline(buffer);
-    logger.printline(taskToCharStr(schedule[index]));
+    logger.printline(taskToCharStr(&schedule[index]));
   }
 }
 }
