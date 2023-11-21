@@ -100,16 +100,17 @@ void printWelcome() {
 }
 void startScheduler() {
   logger.printline("starting scheduler...");
+  interrupts();
   if(!schedulerInitialized){
     Serial.println("SCHEDULER/LOGGER NOT INITIALIZED. RUN initScheduler() FIRST!");
     return;
   }
   printWelcome();
-  if (schedule[0].isActive) {
+  if (schedule[0].isActive && schedule[0].triggerTime != ASAP) {
     logger.printline("Please consider adding initial Tasks through an ASAP Task for high precision apps", logger.LogLevel::Warning);
   }
   if (schedulerRunning) {
-    logger.printline("THERE MIGHT BE ANOTHER SCHEDULER ALREADY RUNNING!", logger.LogLevel::Severe);
+    logger.printline("THERE MIGHT BE ANOTHER SCHEDULER ALREADY RUNNING! ABORTING...", logger.LogLevel::Severe);
     return;
   }
   else{
