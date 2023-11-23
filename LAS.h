@@ -10,6 +10,7 @@ struct Task;
 class Callable {
   public:
     virtual void run() = 0;
+    void onFinish();
 
     void operator()();
 

@@ -24,6 +24,8 @@ void Callable::operator()(){
   return run();
 }
 
+void Callable::onFinish(){}
+
 int getActiveTaskIndex() {
   return activeTaskIndex;
 }
@@ -103,6 +105,7 @@ void printWelcome() {
 
 void finishTask(Task task){
   task.isActive = false;
+  task.callable->onFinish();
   if(task.deleteAfter){
     delete task.callable;
   }
