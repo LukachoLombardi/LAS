@@ -26,6 +26,7 @@ class CallableVoidFunction : public Callable{
 struct Task {
   bool isActive;     //whether or not a Task is actively maintained. inactive tasks are invalid and can be deleted or overwritten at any time.
   Callable* callable;
+  bool deleteAfter;
   long triggerTime;  //time in millis to next trigger func
   bool repeat;  //if true: adds repeatIntervall to triggerTime instead of deactivating task right before execution, creating a recurring task.
   int repeatInterval;
@@ -35,6 +36,7 @@ struct Task {
 struct DummyTask: Task {
   bool isActive = false;     //whether or not a Task is actively maintained. inactive tasks are invalid and can be deleted or overwritten at any time.
   Callable* callable = nullptr;
+  bool deleteAfter = false;
   long triggerTime = 0;  //time in millis to next trigger func
   bool repeat = false;  //if true: adds repeatIntervall to triggerTime instead of deactivating task right before execution, creating a recurring task.
   int repeatInterval = 0;
@@ -53,8 +55,8 @@ Task getTask(int index);
 
 int determineFirstFreeIndex(Task array[], int length);
 
-void scheduleFunction(void (*func)(), long triggerTime = ASAP, bool repeat = false, int repeatInterval = 0, int remainingRepeats = -1);
-void scheduleCallable(Callable* callable, long triggerTime = ASAP, bool repeat = false, int repeatInterval = 0, int remainingRepeats = -1);
+void scheduleFunction(void (*func)(), long triggerTime = ASAP, bool deleteAfter = false, bool repeat = false, int repeatInterval = 0, int remainingRepeats = -1);
+void scheduleCallable(Callable* callable, long triggerTime = ASAP, bool deleteAfter = false, bool repeat = false, int repeatInterval = 0, int remainingRepeats = -1);
 void scheduleIn(void (*func)(), long triggerDelay);
 void scheduleIn(Callable* callable, long triggerDelay);
 void scheduleRepeated(void (*func)(), int repeatInterval = ASAP, int repeats = -1);

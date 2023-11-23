@@ -4,6 +4,7 @@ namespace LAS {
 Task schedule[SCHEDULE_SIZE] = { Task{
   false,
   nullptr,
+  false,
   0,
   false,
   0 } };
@@ -39,7 +40,7 @@ int determineFirstInactiveIndex(Task array[], int length) {
   return length+1;
 }
 
-void scheduleCallable(Callable *callable, long triggerTime, bool repeat, int repeatInterval, int remainingRepeats) {
+void scheduleCallable(Callable *callable, long triggerTime, bool deleteAfter, bool repeat, int repeatInterval, int remainingRepeats) {
   if(!schedulerInitialized){
     Serial.println("SCHEDULER/LOGGER NOT INITIALIZED. RUN initScheduler() FIRST!");
     return;
@@ -47,6 +48,7 @@ void scheduleCallable(Callable *callable, long triggerTime, bool repeat, int rep
   Task newTask = Task{
     true,
     callable,
+    deleteAfter,
     triggerTime,
     repeat,
     repeatInterval,
@@ -65,8 +67,8 @@ void scheduleCallable(Callable *callable, long triggerTime, bool repeat, int rep
   logger.printline(buffer, logger.LogLevel::Debug);
 }
 
-void scheduleFunction(void (*func)(), long triggerTime, bool repeat, int repeatInterval, int remainingRepeats) {
-  scheduleCallable(new CallableVoidFunction(func), triggerTime, repeat, repeatInterval, remainingRepeats);
+void scheduleFunction(void (*func)(), long triggerTime, bool deleteAfter, bool repeat, int repeatInterval, int remainingRepeats) {
+  scheduleCallable(new CallableVoidFunction(func), triggerTime, deleteAfter, repeat, repeatInterval, remainingRepeats);
 }
 
 void scheduleIn(void (*func)(), long triggerDelay) {
@@ -98,6 +100,14 @@ void printWelcome() {
   Serial.print("Lukacho's Amazing Scheduler - alpha "); Serial.print(LAS_VERSION); Serial.println(" - now with Callables!");
   Serial.println();
 }
+
+void finishTask(Task task){
+  task.isActive = false;
+  if(task.deleteAfter){
+    delete task.callable;
+  }
+}
+
 void startScheduler() {
   logger.printline("starting scheduler...");
   interrupts();
@@ -135,13 +145,13 @@ void startScheduler() {
           }
 
           if (schedule[index].remainingRepeats == 0) {
-            schedule[index].isActive = false;
+            finishTask(schedule[index]);
             char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
             snprintf(buffer, sizeof(buffer), "finished repeat Task at %p", &schedule[index]);
             logger.printline(buffer, logger.LogLevel::Debug);
           }
         } else {
-          schedule[index].isActive = false;
+          finishTask(schedule[index]);
           char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
           snprintf(buffer, sizeof(buffer), "finished Task at %p", &schedule[index]);
           logger.printline(buffer, logger.LogLevel::Debug);
