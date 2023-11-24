@@ -103,11 +103,11 @@ void printWelcome() {
   Serial.println();
 }
 
-void finishTask(Task task){
-  task.isActive = false;
-  task.callable->onFinish();
-  if(task.deleteAfter){
-    delete task.callable;
+void finishTask(Task *task){
+  task->isActive = false;
+  task->callable->onFinish();
+  if(task->deleteAfter){
+    delete task->callable;
   }
 }
 
@@ -147,13 +147,13 @@ void startScheduler() {
           }
 
           if (schedule[index].remainingRepeats == 0) {
-            finishTask(schedule[index]);
+            finishTask(&schedule[index]);
             char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
             snprintf(buffer, sizeof(buffer), "finished repeat Task at %p", &schedule[index]);
             logger.printline(buffer, logger.LogLevel::Debug);
           }
         } else {
-          finishTask(schedule[index]);
+          finishTask(&schedule[index]);
           char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
           snprintf(buffer, sizeof(buffer), "finished Task at %p", &schedule[index]);
           logger.printline(buffer, logger.LogLevel::Debug);
@@ -184,10 +184,15 @@ void clearSchedule(){
 
 char* taskToCharStr(Task *task) {
   static char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
-  snprintf(buffer, sizeof(buffer), "Task %p:\n  isActive: %d\n  callable: %p\n  triggerTime: %d\n  repeat: %d\n  repeatInterval: %d",
-           task, task->isActive, task->callable, task->triggerTime, task->repeat, task->repeatInterval);
+  char buffer_2[INTERNAL_CHAR_STR_SIZE_UNIT];
+  snprintf(buffer, sizeof(buffer), "Task %p:\nisActive: %i\ndeleteAfter: %i\ncallable: %p\ntriggerTime: %d\nrepeat: %i\nrepeatInterval: %i\nremainingRepeats: %i",
+           task, task->isActive, task->deleteAfter, task->callable, task->triggerTime);
+  snprintf(buffer_2, sizeof(buffer), "\nrepeat: %i\nrepeatInterval: %i\nremainingRepeats: %i",
+           task->repeat, task->repeatInterval, task->remainingRepeats);
+  strcat(buffer,buffer_2);
   return buffer;
 }
+
 char* scheduleToCharStr() {
   static char buffer[INTERNAL_CHAR_STR_SIZE_UNIT * SCHEDULE_SIZE];
   for (int index = 0; index < SCHEDULE_SIZE; index++) {
@@ -206,7 +211,7 @@ Task getTask(int index) {
 void printSchedule() {
   for (int index = 0; index < SCHEDULE_SIZE; index++) {
     char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
-    snprintf(buffer, sizeof(buffer), "%d\n:", index);
+    snprintf(buffer, sizeof(buffer), "%d:", index);
     logger.printline(buffer);
     logger.printline(taskToCharStr(&schedule[index]));
   }
