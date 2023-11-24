@@ -113,7 +113,6 @@ void finishTask(Task task){
 
 void startScheduler() {
   logger.printline("starting scheduler...");
-  interrupts();
   if(!schedulerInitialized){
     Serial.println("SCHEDULER/LOGGER NOT INITIALIZED. RUN initScheduler() FIRST!");
     return;
@@ -165,6 +164,7 @@ void startScheduler() {
 }
 
 void initScheduler(Logger logger) {
+  interrupts();
   logger = logger;
   schedulerInitialized = true;
   logger.printline("logger initialized");
