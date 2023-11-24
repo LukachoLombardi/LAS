@@ -58,10 +58,10 @@ int determineFirstFreeIndex(Task array[], int length);
 
 void scheduleFunction(void (*func)(), long triggerTime = ASAP, bool deleteAfter = true, bool repeat = false, int repeatInterval = 0, int remainingRepeats = -1);
 void scheduleCallable(Callable* callable, long triggerTime = ASAP, bool deleteAfter = true, bool repeat = false, int repeatInterval = 0, int remainingRepeats = -1);
-void scheduleIn(void (*func)(), long triggerDelay);
-void scheduleIn(Callable* callable, long triggerDelay);
-void scheduleRepeated(void (*func)(), int repeatInterval = ASAP, int repeats = -1);
-void scheduleRepeated(Callable* callable, int repeatInterval = ASAP, int repeats = -1);
+void scheduleIn(void (*func)(), long triggerDelay, bool deleteAfter = true);
+void scheduleIn(Callable* callable, long triggerDelay, bool deleteAfter = true);
+void scheduleRepeated(void (*func)(), int repeatInterval = ASAP, int repeats = -1, bool deleteAfter = true);
+void scheduleRepeated(Callable* callable, int repeatInterval = ASAP, int repeats = -1, bool deleteAfter = true);
 
 void printWelcome();
 char* taskToCharStr(Task task);

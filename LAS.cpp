@@ -73,20 +73,20 @@ void scheduleFunction(void (*func)(), long triggerTime, bool deleteAfter, bool r
   scheduleCallable(new CallableVoidFunction(func), triggerTime, deleteAfter, repeat, repeatInterval, remainingRepeats);
 }
 
-void scheduleIn(void (*func)(), long triggerDelay) {
-  scheduleFunction(func, millis() + triggerDelay);
+void scheduleIn(void (*func)(), long triggerDelay, bool deleteAfter) {
+  scheduleFunction(func, millis() + triggerDelay, deleteAfter);
 }
 
-void scheduleIn(Callable *callable, long triggerDelay) {
-  scheduleCallable(callable, millis() + triggerDelay);
+void scheduleIn(Callable *callable, long triggerDelay, bool deleteAfter) {
+  scheduleCallable(callable, millis() + triggerDelay, deleteAfter);
 }
 
-void scheduleRepeated(void (*func)(), int repeatInterval, int repeats) {
-  scheduleFunction(func, millis() + repeatInterval, true, repeatInterval, repeats);
+void scheduleRepeated(void (*func)(), int repeatInterval, int repeats, bool deleteAfter) {
+  scheduleFunction(func, millis() + repeatInterval, deleteAfter, true, repeatInterval, repeats);
 }
 
-void scheduleRepeated(Callable *callable, int repeatInterval, int repeats) {
-  scheduleCallable(callable, millis() + repeatInterval, true, repeatInterval, repeats);
+void scheduleRepeated(Callable *callable, int repeatInterval, int repeats, bool deleteAfter) {
+  scheduleCallable(callable, millis() + repeatInterval, deleteAfter, true, repeatInterval, repeats);
 }
 
 void printWelcome() {
