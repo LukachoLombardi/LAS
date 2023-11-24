@@ -4,7 +4,7 @@ namespace LAS {
 Task schedule[SCHEDULE_SIZE] = { Task{
   false,
   nullptr,
-  false,
+  true,
   0,
   false,
   0 } };
