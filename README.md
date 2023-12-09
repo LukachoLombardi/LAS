@@ -12,7 +12,7 @@ LAS can:
 - execute timed code
 - execute repeated code
 - allow you to manipulate Tasks from within their included functions for maximum control
-- have an accuracy of 50ms> most of the time
+- have an accuracy of less than a ms while doing so
 
 Most importantly, LAS can easily help you get rid of the pitfalls that can arise from using delays or basic millis() based timing when combined with recurring tasks.
 
@@ -21,11 +21,21 @@ all LAS functions and fields can be accessed through its namespace. LAS is fully
 - LAS::scheduleFunction: schedule a paramterless void function as an internal task with a variety of timing and repeat options
 - LAS::scheduleIn: A handy shortcut for simple scheduling of a function in x milliseconds
 - LAS::scheduleRepeated: shortcut for creating a simple repeated task
-- LAS::schedulerInit: Start LAS. You can pass an instance of arduLogger (or a wrapper for another logger following arduLoggers definition) or let LAS create one internally, if you prefer to use another logger for the rest of your project.
+- LAS::schedulerInit: <s>Start LAS</s>. Initialize LAS. Only needs a logger right now. You can pass an instance of arduLogger (or a wrapper for another logger following arduLoggers definition) or let LAS create one internally, if you prefer to use another logger for the rest of your project.
+- LAS::schedulerStart: actually starts LAS after successful initialization. Place first schedulings inbetween init and start.
 
 - ALL OF THE ABOVE FUNCTIONS ARE NOW AVAILABLE TO BE USED WITH CALLABLES AS WELL.
 - Simply derive a class from "Callable" and override the run method with your function, then pass an object as previously done as a pointer. You can also include environment variables or return pointers for your void function.
+- new: there's an overridable "onFinish" method now. No "onCreate" for now though, 
+as actually running it on creation seems kind of pointless, and I don't really want to add another Task field to count ececutions done.
 
-## Why did I even make this?
-mostly for fun, secondly for an Arduino based robot project. 
+What to expect in the future:
+- The abovementioned "onCreate" method will probably come sometime in the future
+- also I'm planning to optimize LAS a bit by cutting down on unused fields on non-repeating tasks.
+
+## Why did I even make this and not just use an existing project?
+mostly for fun! This project really helped me in understanding some of C++'s low level concepts better. 
+Also I prefer working with lightweight implementations I fully understand instead of immediately adapting an existing framework with lots of overhead.
+
+This is also actively used for an Arduino based robot project (still very WIP): 
 See [Philipp Räuchle](https://github.com/LukachoLombardi/PhilippRaeuchle) for more.
