@@ -185,7 +185,7 @@ void clearSchedule(){
 char* taskToCharStr(Task *task) {
   static char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
   char buffer_2[INTERNAL_CHAR_STR_SIZE_UNIT];
-  snprintf(buffer, sizeof(buffer), "Task %p:\n  isActive: %i\n  deleteAfter: %i\n  callable: %p\n  triggerTime: %d\n  repeat: %i\n  repeatInterval: %i\n  remainingRepeats: %i",
+  snprintf(buffer, sizeof(buffer), "Task %p:\n  isActive: %i\n  deleteAfter: %i\n  callable: %p\n  triggerTime: %d\n",
            task, task->isActive, task->deleteAfter, task->callable, task->triggerTime);
   snprintf(buffer_2, sizeof(buffer), "\n  repeat: %i\n  repeatInterval: %i\n  remainingRepeats: %i",
            task->repeat, task->repeatInterval, task->remainingRepeats);
