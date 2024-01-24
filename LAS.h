@@ -44,7 +44,7 @@ struct DummyTask: Task {
   int remainingRepeats = 0;
 };
 
-extern Task schedule[SCHEDULE_SIZE];
+extern Task schedule[LAS_SCHEDULE_SIZE];
 extern int activeTaskIndex;
 extern Logger logger;
 extern bool schedulerInitialized;

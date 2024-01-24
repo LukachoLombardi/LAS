@@ -1,7 +1,7 @@
 #include "LAS.h"
 
 namespace LAS {
-Task schedule[SCHEDULE_SIZE] = { Task{
+Task schedule[LAS_SCHEDULE_SIZE] = { Task{
   false,
   nullptr,
   true,
@@ -56,15 +56,15 @@ void scheduleCallable(Callable *callable, long triggerTime, bool deleteAfter, bo
     repeatInterval,
     remainingRepeats
   };
-  int freeIndex = determineFirstInactiveIndex(schedule, SCHEDULE_SIZE);
-  if(freeIndex > SCHEDULE_SIZE) {
+  int freeIndex = determineFirstInactiveIndex(schedule, LAS_SCHEDULE_SIZE);
+  if(freeIndex > LAS_SCHEDULE_SIZE) {
     logger.printline("SCHEDULE IS FULL! ABORTING TO AVOID UNDEFINED BEHAVIOUR.", "severe");
     //abort
     while(true);
   }
   schedule[freeIndex] = newTask;
   schedule[freeIndex].callable->taskPtr = &schedule[freeIndex];
-  char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
+  char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
   snprintf(buffer, sizeof(buffer), "scheduled Task at %p", &schedule[freeIndex]);
   logger.printline(buffer, logger.LogLevel::Debug);
 }
@@ -129,12 +129,12 @@ void startScheduler() {
     schedulerRunning = true;
   }
   while (true) {
-    for (int index = 0; index < SCHEDULE_SIZE; index++) {
+    for (int index = 0; index < LAS_SCHEDULE_SIZE; index++) {
       activeTaskIndex = index;
       Task currentTask = schedule[index];
       if ((currentTask.isActive) && (currentTask.callable != nullptr) && (currentTask.triggerTime <= millis())) {
 
-        if (millis() - currentTask.triggerTime >= CRITICAL_LAG_MS && currentTask.triggerTime != 0) {
+        if (millis() - currentTask.triggerTime >= LAS_CRITICAL_LAG_MS && currentTask.triggerTime != 0) {
           logger.printline("SCHEDULER IS FALLING BEHIND CRITICALLY!", logger.LogLevel::Warning);
         }        
 
@@ -148,13 +148,13 @@ void startScheduler() {
 
           if (schedule[index].remainingRepeats == 0) {
             finishTask(&schedule[index]);
-            char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
+            char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
             snprintf(buffer, sizeof(buffer), "finished repeat Task at %p", &schedule[index]);
             logger.printline(buffer, logger.LogLevel::Debug);
           }
         } else {
           finishTask(&schedule[index]);
-          char buffer[INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
+          char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
           snprintf(buffer, sizeof(buffer), "finished Task at %p", &schedule[index]);
           logger.printline(buffer, logger.LogLevel::Debug);
         }
@@ -177,14 +177,14 @@ void initScheduler() {
 
 void clearSchedule(){
   logger.printline("Clearing schedule as demanded programatically.", "warning");
-  for(int i = 0; i<SCHEDULE_SIZE;i++){
+  for(int i = 0; i<LAS_SCHEDULE_SIZE;i++){
     schedule[i] = DummyTask();
   }
 }
 
 char* taskToCharStr(Task *task) {
-  static char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
-  char buffer_2[INTERNAL_CHAR_STR_SIZE_UNIT];
+  static char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT];
+  char buffer_2[LAS_INTERNAL_CHAR_STR_SIZE_UNIT];
   snprintf(buffer, sizeof(buffer), "Task %p:\n  isActive: %i\n  deleteAfter: %i\n  callable: %p\n  triggerTime: %d\n",
            task, task->isActive, task->deleteAfter, task->callable, task->triggerTime);
   snprintf(buffer_2, sizeof(buffer), "\n  repeat: %i\n  repeatInterval: %i\n  remainingRepeats: %i",
@@ -194,8 +194,8 @@ char* taskToCharStr(Task *task) {
 }
 
 char* scheduleToCharStr() {
-  static char buffer[INTERNAL_CHAR_STR_SIZE_UNIT * SCHEDULE_SIZE];
-  for (int index = 0; index < SCHEDULE_SIZE; index++) {
+  static char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT * LAS_SCHEDULE_SIZE];
+  for (int index = 0; index < LAS_SCHEDULE_SIZE; index++) {
     static char indexBuffer[3];
     snprintf(indexBuffer, sizeof(buffer), "\n%d:\n", index);
     strcat(buffer, indexBuffer);
@@ -209,8 +209,8 @@ Task getTask(int index) {
 }
 
 void printSchedule() {
-  for (int index = 0; index < SCHEDULE_SIZE; index++) {
-    char buffer[INTERNAL_CHAR_STR_SIZE_UNIT];
+  for (int index = 0; index < LAS_SCHEDULE_SIZE; index++) {
+    char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT];
     snprintf(buffer, sizeof(buffer), "%d:", index);
     logger.printline(buffer);
     logger.printline(taskToCharStr(&schedule[index]));
