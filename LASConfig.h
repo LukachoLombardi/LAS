@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef LAS_SCHEDULE_SIZE
-#define LAS_SCHEDULE_SIZE 8
+#define LAS_SCHEDULE_SIZE 128
 #endif
 
 #ifndef LAS_CRITICAL_LAG_MS
