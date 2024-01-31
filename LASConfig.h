@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef LAS_SCHEDULE_SIZE
 #define LAS_SCHEDULE_SIZE 128
 #endif

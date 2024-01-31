@@ -11,7 +11,7 @@ Task schedule[LAS_SCHEDULE_SIZE] = { Task{
 
 int activeTaskIndex = 0;
 bool schedulerInitialized = false;
-extern bool schedulerRunning = false;
+bool schedulerRunning = false;
 Logger logger;
 
 void CallableVoidFunction::run(){
@@ -108,6 +108,7 @@ void finishTask(Task *task){
   task->callable->onFinish();
   if(task->deleteAfter){
     delete task->callable;
+    task->callable = nullptr;
   }
 }
 
@@ -158,6 +159,9 @@ void startScheduler() {
           snprintf(buffer, sizeof(buffer), "finished Task at %p", &schedule[index]);
           logger.printline(buffer, logger.LogLevel::Debug);
         }
+      } else if(currentTask.deleteAfter && currentTask.callable != nullptr) {
+        delete currentTask.callable;
+        currentTask.callable = nullptr;
       }
     }
   }
