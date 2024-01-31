@@ -1,0 +1,10 @@
+#ifndef LAS_CONFIG
+#define LAS_CONFIG
+
+#define LAS_SCHEDULE_SIZE 32
+
+#define LAS_CRITICAL_LAG_MS 500
+
+#define LAS_INTERNAL_CHAR_STR_SIZE_UNIT 128
+
+#endif
