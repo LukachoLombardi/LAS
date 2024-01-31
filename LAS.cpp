@@ -159,7 +159,7 @@ void startScheduler() {
           snprintf(buffer, sizeof(buffer), "finished Task at %p", &schedule[index]);
           logger.printline(buffer, logger.LogLevel::Debug);
         }
-      } else if(currentTask.deleteAfter && currentTask.callable != nullptr) {
+    } else if(currentTask.callable != nullptr && !currentTask.isActive && currentTask.deleteAfter) {
         delete currentTask.callable;
         currentTask.callable = nullptr;
       }
