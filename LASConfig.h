@@ -1,5 +1,5 @@
 #ifndef LAS_SCHEDULE_SIZE
-#define LAS_SCHEDULE_SIZE 128
+#define LAS_SCHEDULE_SIZE 32
 #endif
 
 #ifndef LAS_CRITICAL_LAG_MS
