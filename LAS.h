@@ -15,6 +15,8 @@ class Callable {
 
     void operator()();
 
+    void finish();
+
     Task *taskPtr = nullptr; //check for nullptr to ensure correct scheduler environment
 };
 
@@ -54,7 +56,6 @@ extern bool schedulerRunning;
 int getActiveTaskIndex();
 Task getActiveTask();
 Task getTask(int index);
-void finishTask(Task* task);
 
 int determineFirstFreeIndex(Task array[], int length);
 

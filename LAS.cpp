@@ -14,17 +14,21 @@ bool schedulerInitialized = false;
 bool schedulerRunning = false;
 Logger logger;
 
-void CallableVoidFunction::run(){
+void CallableVoidFunction::run() {
   this->func();
 }
-CallableVoidFunction::CallableVoidFunction(void (*funcIn)()){
+CallableVoidFunction::CallableVoidFunction(void (*funcIn)()) {
   this->func = funcIn;
 }
-void Callable::operator()(){
+void Callable::operator()() {
   return run();
 }
 
-void Callable::onFinish(){}
+void Callable::onFinish() {}
+
+void Callable::finish() {
+  taskPtr->isActive = false;
+}
 
 int getActiveTaskIndex() {
   return activeTaskIndex;
@@ -39,11 +43,11 @@ int determineFirstInactiveIndex(Task array[], int length) {
       return index;
     }
   }
-  return length+1;
+  return length + 1;
 }
 
 void scheduleCallable(Callable *callable, long triggerTime, bool deleteAfter, bool repeat, int repeatInterval, int remainingRepeats) {
-  if(!schedulerInitialized){
+  if (!schedulerInitialized) {
     Serial.println("SCHEDULER/LOGGER NOT INITIALIZED. RUN initScheduler() FIRST!");
     return;
   }
@@ -57,10 +61,11 @@ void scheduleCallable(Callable *callable, long triggerTime, bool deleteAfter, bo
     remainingRepeats
   };
   int freeIndex = determineFirstInactiveIndex(schedule, LAS_SCHEDULE_SIZE);
-  if(freeIndex > LAS_SCHEDULE_SIZE) {
+  if (freeIndex > LAS_SCHEDULE_SIZE) {
     logger.printline("SCHEDULE IS FULL! ABORTING TO AVOID UNDEFINED BEHAVIOUR.", "severe");
     //abort
-    while(true);
+    while (true)
+      ;
   }
   schedule[freeIndex] = newTask;
   schedule[freeIndex].callable->taskPtr = &schedule[freeIndex];
@@ -99,14 +104,16 @@ void printWelcome() {
   Serial.println("   \\ \\____/ \\ \\_\\ \\_\\ `\\____\\\\");
   Serial.println("    \\/___/   \\/_/\\/_/\\/_____/");
   Serial.println("");
-  Serial.print("Lukacho's Amazing Scheduler - alpha "); Serial.print(LAS_VERSION); Serial.println(" - now with Callables!");
+  Serial.print("Lukacho's Amazing Scheduler - alpha ");
+  Serial.print(LAS_VERSION);
+  Serial.println(" - now with Callables!");
   Serial.println();
 }
 
-void finishTask(Task *task){
+void finishTask(Task *task) {
   task->isActive = false;
   task->callable->onFinish();
-  if(task->deleteAfter){
+  if (task->deleteAfter) {
     delete task->callable;
     task->callable = nullptr;
   }
@@ -114,7 +121,7 @@ void finishTask(Task *task){
 
 void startScheduler() {
   logger.printline("starting scheduler...");
-  if(!schedulerInitialized){
+  if (!schedulerInitialized) {
     Serial.println("SCHEDULER/LOGGER NOT INITIALIZED. RUN initScheduler() FIRST!");
     return;
   }
@@ -125,8 +132,7 @@ void startScheduler() {
   if (schedulerRunning) {
     logger.printline("THERE MIGHT BE ANOTHER SCHEDULER ALREADY RUNNING! ABORTING...", logger.LogLevel::Severe);
     return;
-  }
-  else{
+  } else {
     schedulerRunning = true;
   }
   while (true) {
@@ -137,7 +143,7 @@ void startScheduler() {
 
         if (millis() - currentTask.triggerTime >= LAS_CRITICAL_LAG_MS && currentTask.triggerTime != 0) {
           logger.printline("SCHEDULER IS FALLING BEHIND CRITICALLY!", logger.LogLevel::Warning);
-        }        
+        }
 
         currentTask.callable->run();
 
@@ -159,7 +165,7 @@ void startScheduler() {
           snprintf(buffer, sizeof(buffer), "finished Task at %p", &schedule[index]);
           logger.printline(buffer, logger.LogLevel::Debug);
         }
-    } else if(currentTask.callable != nullptr && !currentTask.isActive && currentTask.deleteAfter) {
+      } else if (currentTask.callable != nullptr && !currentTask.isActive && currentTask.deleteAfter) {
         delete currentTask.callable;
         currentTask.callable = nullptr;
       }
@@ -179,25 +185,25 @@ void initScheduler() {
   initScheduler(tempLogger);
 }
 
-void clearSchedule(){
+void clearSchedule() {
   logger.printline("Clearing schedule as demanded programatically.", "warning");
-  for(int i = 0; i<LAS_SCHEDULE_SIZE;i++){
+  for (int i = 0; i < LAS_SCHEDULE_SIZE; i++) {
     schedule[i] = DummyTask();
   }
 }
 
-char* taskToCharStr(Task *task) {
+char *taskToCharStr(Task *task) {
   static char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT];
   char buffer_2[LAS_INTERNAL_CHAR_STR_SIZE_UNIT];
   snprintf(buffer, sizeof(buffer), "Task %p:\n  isActive: %i\n  deleteAfter: %i\n  callable: %p\n  triggerTime: %d\n",
            task, task->isActive, task->deleteAfter, task->callable, task->triggerTime);
   snprintf(buffer_2, sizeof(buffer), "\n  repeat: %i\n  repeatInterval: %i\n  remainingRepeats: %i",
            task->repeat, task->repeatInterval, task->remainingRepeats);
-  strcat(buffer,buffer_2);
+  strcat(buffer, buffer_2);
   return buffer;
 }
 
-char* scheduleToCharStr() {
+char *scheduleToCharStr() {
   static char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT * LAS_SCHEDULE_SIZE];
   for (int index = 0; index < LAS_SCHEDULE_SIZE; index++) {
     static char indexBuffer[3];
