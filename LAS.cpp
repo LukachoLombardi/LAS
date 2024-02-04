@@ -55,10 +55,10 @@ void scheduleCallable(Callable *callable, long triggerTime, bool deleteAfter, bo
     true,
     callable,
     deleteAfter,
-    triggerTime,
+    max(ASAP, triggerTime),
     repeat,
-    repeatInterval,
-    remainingRepeats
+    max(ASAP, repeatInterval),
+    max(-1, remainingRepeats)
   };
   int freeIndex = determineFirstInactiveIndex(schedule, LAS_SCHEDULE_SIZE);
   if (freeIndex > LAS_SCHEDULE_SIZE) {
@@ -149,15 +149,13 @@ void startScheduler() {
 
         if (currentTask.repeat) {
           schedule[index].triggerTime = millis() + currentTask.repeatInterval;
-          if (currentTask.remainingRepeats != ENDLESS_LOOP) {
-            schedule[index].remainingRepeats--;
-          }
-
           if (schedule[index].remainingRepeats == 0) {
             finishTask(&schedule[index]);
             char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT / 2] = "";
             snprintf(buffer, sizeof(buffer), "finished repeat Task at %p", &schedule[index]);
             logger.printline(buffer, logger.LogLevel::Debug);
+          } else if (currentTask.remainingRepeats != ENDLESS_LOOP) {
+            schedule[index].remainingRepeats--;
           }
         } else {
           finishTask(&schedule[index]);
