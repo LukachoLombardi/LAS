@@ -43,14 +43,12 @@ private:
 
   int activeTaskIndex = 0;
   Logger logger;
-  bool schedulerInitialized = false;  // redundant, but I'm too lazy to remove the check
+  bool schedulerInitialized = false;
   static bool schedulerRunning;
 
   static int determineFirstInactiveIndex(Task array[], int length);
 
   void finishTask(Task* task);
-
-  void initScheduler(Logger logger, LASConfig config);
 
   char* taskToCharStr(Task* task);
 
@@ -72,9 +70,7 @@ public:
   void startScheduler();
   void clearSchedule();
 
-  LAS(Logger logger, LASConfig config);
-  LAS(Logger logger);
-  LAS(LASConfig config);
-  LAS();
+  void initScheduler(LASConfig config, Logger logger);
+
   ~LAS();
 };

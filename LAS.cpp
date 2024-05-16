@@ -152,7 +152,7 @@ void LAS::startScheduler() {
   }
 }
 
-void LAS::initScheduler(Logger logger, LASConfig config) {
+void LAS::initScheduler(LASConfig config, Logger logger) {
   interrupts();
   logger = logger;
   config = config;
@@ -168,26 +168,6 @@ void LAS::initScheduler(Logger logger, LASConfig config) {
   schedulerInitialized = true;
   logger.printline("scheduler initialized");
   logger.printline("logger test", logger.LogLevel::Debug);
-}
-
-LAS::LAS(Logger logger, LASConfig config) {
-  initScheduler(logger, config);
-}
-
-LAS::LAS(Logger logger) {
-  LASConfig defConfig = LASConfig();
-  initScheduler(logger, defConfig);
-}
-
-LAS::LAS(LASConfig config) {
-  Logger tempLogger = Logger();
-  initScheduler(tempLogger, config);
-}
-
-LAS::LAS() {
-  Logger tempLogger = Logger();
-  LASConfig defConfig = LASConfig();
-  initScheduler(tempLogger, defConfig);
 }
 
 LAS::~LAS() {
