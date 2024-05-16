@@ -76,4 +76,5 @@ public:
   LAS(Logger logger);
   LAS(LASConfig config);
   LAS();
+  ~LAS();
 };

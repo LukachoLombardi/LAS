@@ -190,6 +190,10 @@ LAS::LAS() {
   initScheduler(tempLogger, defConfig);
 }
 
+LAS::~LAS() {
+  delete [] schedule;
+}
+
 void LAS::clearSchedule() {
   logger.printline("Clearing schedule as demanded programatically.", "warning");
   for (int i = 0; i < config.scheduleSize; i++) {
