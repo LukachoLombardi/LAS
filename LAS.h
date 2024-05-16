@@ -3,10 +3,12 @@
 #include <Logger.h>
 
 #include "LASMacros.h"
-#include "LASDefaultConfig.h"
 #include "Version.h"
 
 #include "Callable.h"
+#include "LASConfig.h"
+
+namespace LASUtils {
 #include "Task.h"
 
 struct DummyTask : Task {
@@ -25,19 +27,32 @@ public:
   void run();
   CallableVoidFunction(void (*funcIn)());
 };
-
+}
 
 class LAS {
 private:
-  Task schedule[LAS_SCHEDULE_SIZE];
-  int activeTaskIndex;
+  LASConfig config;
+  Task* schedule;
+  /*{ Task{
+    false,
+    nullptr,
+    true,
+    0,
+    false,
+    0 } }; */
+
+  int activeTaskIndex = 0;
   Logger logger;
-  bool schedulerInitialized;
-  bool schedulerRunning;
+  bool schedulerInitialized = false;  // redundant, but I'm too lazy to remove the check
+  static bool schedulerRunning;
 
   static int determineFirstInactiveIndex(Task array[], int length);
 
-  void finishTask(Task *task);
+  void finishTask(Task* task);
+
+  void initScheduler(Logger logger, LASConfig config);
+
+  char* taskToCharStr(Task* task);
 
 public:
   int getActiveTaskIndex();
@@ -52,11 +67,13 @@ public:
   void scheduleRepeated(Callable* callable, int repeatInterval = ASAP, int repeats = -1, bool deleteAfter = true);
 
   void printWelcome();
-  char* taskToCharStr(Task* task);
   char* scheduleToCharStr();  //WARNING: VERY MEMORY HUNGRY, WILL PROBABLY CRASH YOUR ARDUINO
   void printSchedule();
-  void initScheduler(Logger logger);
-  void initScheduler();
   void startScheduler();
   void clearSchedule();
+
+  LAS(Logger logger, LASConfig config);
+  LAS(Logger logger);
+  LAS(LASConfig config);
+  LAS();
 };
