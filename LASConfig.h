@@ -1,3 +1,5 @@
+#pragma once
+
 struct LASConfig {
   int scheduleSize = 32;
   bool lagWarning = false;
