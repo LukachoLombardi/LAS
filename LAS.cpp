@@ -141,7 +141,7 @@ void startScheduler() {
       Task currentTask = schedule[index];
       if ((currentTask.isActive) && (currentTask.callable != nullptr) && (currentTask.triggerTime <= millis())) {
 
-        if (LAS_CRITICAL_LAG_WARN && millis() - currentTask.triggerTime >= LAS_CRITICAL_LAG_MS && currentTask.triggerTime != 0) {
+        if (millis() - currentTask.triggerTime >= LAS_CRITICAL_LAG_MS && currentTask.triggerTime != 0) {
           logger.printline("SCHEDULER IS FALLING BEHIND CRITICALLY!", logger.LogLevel::Warning);
         }
 
