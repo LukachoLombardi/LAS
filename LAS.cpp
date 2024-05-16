@@ -171,6 +171,7 @@ void LAS::initScheduler(LASConfig config, Logger logger) {
 }
 
 LAS::~LAS() {
+  LAS::schedulerRunning = false;
   delete [] schedule;
 }
 
