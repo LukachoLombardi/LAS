@@ -1,6 +1,5 @@
 #include "LAS.h"
 
-namespace LAS {
 Task schedule[LAS_SCHEDULE_SIZE] = { Task{
   false,
   nullptr,
@@ -12,7 +11,6 @@ Task schedule[LAS_SCHEDULE_SIZE] = { Task{
 int activeTaskIndex = 0;
 bool schedulerInitialized = false;
 bool schedulerRunning = false;
-Logger logger;
 
 void CallableVoidFunction::run() {
   this->func();
@@ -20,24 +18,15 @@ void CallableVoidFunction::run() {
 CallableVoidFunction::CallableVoidFunction(void (*funcIn)()) {
   this->func = funcIn;
 }
-void Callable::operator()() {
-  return run();
-}
 
-void Callable::onFinish() {}
-
-void Callable::finish() {
-  taskPtr->isActive = false;
-}
-
-int getActiveTaskIndex() {
+int LAS::getActiveTaskIndex() {
   return activeTaskIndex;
 }
-Task getActiveTask() {
+Task LAS::getActiveTask() {
   return getTask(activeTaskIndex);
 }
 
-int determineFirstInactiveIndex(Task array[], int length) {
+int LAS::determineFirstInactiveIndex(Task array[], int length) {
   for (int index = 0; index < length; index++) {
     if (!array[index].isActive) {
       return index;
@@ -46,7 +35,7 @@ int determineFirstInactiveIndex(Task array[], int length) {
   return length + 1;
 }
 
-void scheduleCallable(Callable *callable, long triggerTime, bool deleteAfter, bool repeat, int repeatInterval, int remainingRepeats) {
+void LAS::scheduleCallable(Callable *callable, long triggerTime, bool deleteAfter, bool repeat, int repeatInterval, int remainingRepeats) {
   if (!schedulerInitialized) {
     Serial.println("SCHEDULER/LOGGER NOT INITIALIZED. RUN initScheduler() FIRST!");
     return;
@@ -60,7 +49,7 @@ void scheduleCallable(Callable *callable, long triggerTime, bool deleteAfter, bo
     max(ASAP, repeatInterval),
     max(-1, remainingRepeats)
   };
-  int freeIndex = determineFirstInactiveIndex(schedule, LAS_SCHEDULE_SIZE);
+  int freeIndex = LAS::determineFirstInactiveIndex(schedule, LAS_SCHEDULE_SIZE);
   if (freeIndex > LAS_SCHEDULE_SIZE) {
     logger.printline("SCHEDULE IS FULL! ABORTING TO AVOID UNDEFINED BEHAVIOUR.", "severe");
     //abort
@@ -74,27 +63,27 @@ void scheduleCallable(Callable *callable, long triggerTime, bool deleteAfter, bo
   logger.printline(buffer, logger.LogLevel::Debug);
 }
 
-void scheduleFunction(void (*func)(), long triggerTime, bool deleteAfter, bool repeat, int repeatInterval, int remainingRepeats) {
+void LAS::scheduleFunction(void (*func)(), long triggerTime, bool deleteAfter, bool repeat, int repeatInterval, int remainingRepeats) {
   scheduleCallable(new CallableVoidFunction(func), triggerTime, deleteAfter, repeat, repeatInterval, remainingRepeats);
 }
 
-void scheduleIn(void (*func)(), long triggerDelay, bool deleteAfter) {
+void LAS::scheduleIn(void (*func)(), long triggerDelay, bool deleteAfter) {
   scheduleFunction(func, millis() + triggerDelay, deleteAfter);
 }
 
-void scheduleIn(Callable *callable, long triggerDelay, bool deleteAfter) {
+void LAS::scheduleIn(Callable *callable, long triggerDelay, bool deleteAfter) {
   scheduleCallable(callable, millis() + triggerDelay, deleteAfter);
 }
 
-void scheduleRepeated(void (*func)(), int repeatInterval, int repeats, bool deleteAfter) {
+void LAS::scheduleRepeated(void (*func)(), int repeatInterval, int repeats, bool deleteAfter) {
   scheduleFunction(func, millis() + repeatInterval, deleteAfter, true, repeatInterval, repeats);
 }
 
-void scheduleRepeated(Callable *callable, int repeatInterval, int repeats, bool deleteAfter) {
+void LAS::scheduleRepeated(Callable *callable, int repeatInterval, int repeats, bool deleteAfter) {
   scheduleCallable(callable, millis() + repeatInterval, deleteAfter, true, repeatInterval, repeats);
 }
 
-void printWelcome() {
+void LAS::printWelcome() {
   Serial.println("This Unit is running");
   Serial.println(" __       ______  ____       ");
   Serial.println("/\\ \\     /\\  _  \\/\\  _`\\     ");
@@ -110,7 +99,7 @@ void printWelcome() {
   Serial.println();
 }
 
-void finishTask(Task *task) {
+void LAS::finishTask(Task *task) {
   task->isActive = false;
   task->callable->onFinish();
   if (task->deleteAfter) {
@@ -119,7 +108,7 @@ void finishTask(Task *task) {
   }
 }
 
-void startScheduler() {
+void LAS::startScheduler() {
   logger.printline("starting scheduler...");
   if (!schedulerInitialized) {
     Serial.println("SCHEDULER/LOGGER NOT INITIALIZED. RUN initScheduler() FIRST!");
@@ -171,26 +160,26 @@ void startScheduler() {
   }
 }
 
-void initScheduler(Logger logger) {
+void LAS::initScheduler(Logger logger) {
   interrupts();
   logger = logger;
   schedulerInitialized = true;
   logger.printline("logger initialized");
 }
 
-void initScheduler() {
+void LAS::initScheduler() {
   Logger tempLogger = Logger();
   initScheduler(tempLogger);
 }
 
-void clearSchedule() {
+void LAS::clearSchedule() {
   logger.printline("Clearing schedule as demanded programatically.", "warning");
   for (int i = 0; i < LAS_SCHEDULE_SIZE; i++) {
     schedule[i] = DummyTask();
   }
 }
 
-char *taskToCharStr(Task *task) {
+char *LAS::taskToCharStr(Task *task) {
   static char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT];
   char buffer_2[LAS_INTERNAL_CHAR_STR_SIZE_UNIT];
   snprintf(buffer, sizeof(buffer), "Task %p:\n  isActive: %i\n  deleteAfter: %i\n  callable: %p\n  triggerTime: %d\n",
@@ -201,7 +190,7 @@ char *taskToCharStr(Task *task) {
   return buffer;
 }
 
-char *scheduleToCharStr() {
+char *LAS::scheduleToCharStr() {
   static char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT * LAS_SCHEDULE_SIZE];
   for (int index = 0; index < LAS_SCHEDULE_SIZE; index++) {
     static char indexBuffer[3];
@@ -212,16 +201,15 @@ char *scheduleToCharStr() {
   return buffer;
 }
 
-Task getTask(int index) {
+Task LAS::getTask(int index) {
   return schedule[index];
 }
 
-void printSchedule() {
+void LAS::printSchedule() {
   for (int index = 0; index < LAS_SCHEDULE_SIZE; index++) {
     char buffer[LAS_INTERNAL_CHAR_STR_SIZE_UNIT];
     snprintf(buffer, sizeof(buffer), "%d:", index);
     logger.printline(buffer);
     logger.printline(taskToCharStr(&schedule[index]));
   }
-}
 }
