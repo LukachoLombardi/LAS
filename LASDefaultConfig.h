@@ -5,6 +5,8 @@
 
 #define LAS_CRITICAL_LAG_MS 500
 
+#define LAS_CRITICAL_LAG_WARN true
+
 #define LAS_INTERNAL_CHAR_STR_SIZE_UNIT 128
 
 #endif
