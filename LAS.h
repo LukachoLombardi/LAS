@@ -6,10 +6,10 @@
 #include "Version.h"
 
 #include "Callable.h"
+#include "Task.h"
 #include "LASConfig.h"
 
 namespace LASUtils {
-#include "Task.h"
 
 struct DummyTask : Task {
   bool isActive = false;  //whether or not a Task is actively maintained. inactive tasks are invalid and can be deleted or overwritten at any time.
@@ -50,8 +50,6 @@ private:
 
   void finishTask(Task* task);
 
-  char* taskToCharStr(Task* task);
-
 public:
   int getActiveTaskIndex();
   Task getActiveTask();
@@ -67,6 +65,7 @@ public:
   void printWelcome();
   char* scheduleToCharStr();  //WARNING: VERY MEMORY HUNGRY, WILL PROBABLY CRASH YOUR ARDUINO
   void printSchedule();
+  char* taskToCharStr(Task* task);
   void startScheduler();
   void clearSchedule();
 

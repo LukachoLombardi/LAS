@@ -172,13 +172,14 @@ void LAS::initScheduler(LASConfig config, Logger logger) {
 
 LAS::~LAS() {
   LAS::schedulerRunning = false;
+  clearSchedule();
   delete [] schedule;
 }
 
 void LAS::clearSchedule() {
   logger.printline("Clearing schedule as demanded programatically.", "warning");
   for (int i = 0; i < config.scheduleSize; i++) {
-    schedule[i] = DummyTask();
+    finishTask(&schedule[i]);
   }
 }
 
