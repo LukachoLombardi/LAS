@@ -87,7 +87,7 @@ void LAS::printWelcome() {
   Serial.println("");
   Serial.print("Lukacho's Amazing Scheduler - alpha ");
   Serial.print(LAS_VERSION);
-  Serial.println(" - now with Callables!");
+  Serial.println(" - it\'s a class now!");
   Serial.println();
 }
 
