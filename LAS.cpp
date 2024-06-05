@@ -51,7 +51,7 @@ void LAS::scheduleCallable(Callable *callable, long triggerTime, bool deleteAfte
   schedule[freeIndex] = newTask;
   schedule[freeIndex].callable->taskPtr = &schedule[freeIndex];
   char buffer[config.strSize / 2] = "";
-  snprintf(buffer, sizeof(buffer), "scheduled Task at %p", &schedule[freeIndex]);
+  snprintf(buffer, sizeof(char) * config.strSize, "scheduled Task at %p", &schedule[freeIndex]);
   logger.printline(buffer, logger.LogLevel::Debug);
 }
 
@@ -133,7 +133,7 @@ void LAS::startScheduler() {
           if (schedule[index].remainingRepeats == 0) {
             finishTask(&schedule[index]);
             char buffer[config.strSize / 2] = "";
-            snprintf(buffer, sizeof(buffer), "finished repeat Task at %p", &schedule[index]);
+            snprintf(buffer, sizeof(char) * config.strSize, "finished repeat Task at %p", &schedule[index]);
             logger.printline(buffer, logger.LogLevel::Debug);
           } else if (currentTask.remainingRepeats != ENDLESS_LOOP) {
             schedule[index].remainingRepeats--;
@@ -141,7 +141,7 @@ void LAS::startScheduler() {
         } else {
           finishTask(&schedule[index]);
           char buffer[config.strSize / 2] = "";
-          snprintf(buffer, sizeof(buffer), "finished Task at %p", &schedule[index]);
+          snprintf(buffer, sizeof(char) * config.strSize, "finished Task at %p", &schedule[index]);
           logger.printline(buffer, logger.LogLevel::Debug);
         }
       } else if (currentTask.callable != nullptr && !currentTask.isActive && currentTask.deleteAfter) {
@@ -186,9 +186,9 @@ void LAS::clearSchedule() {
 char *LAS::taskToCharStr(Task *task) {
   static char* buffer = new char[config.strSize];
   char buffer_2[config.strSize];
-  snprintf(buffer, sizeof(buffer), "Task %p:\n  isActive: %i\n  deleteAfter: %i\n  callable: %p\n  triggerTime: %d\n",
+  snprintf(buffer, sizeof(char) * config.strSize, "Task %p:\n  isActive: %i\n  deleteAfter: %i\n  callable: %p\n  triggerTime: %d\n",
            task, task->isActive, task->deleteAfter, task->callable, task->triggerTime);
-  snprintf(buffer_2, sizeof(buffer), "\n  repeat: %i\n  repeatInterval: %i\n  remainingRepeats: %i",
+  snprintf(buffer_2, sizeof(char) * config.strSize, "\n  repeat: %i\n  repeatInterval: %i\n  remainingRepeats: %i",
            task->repeat, task->repeatInterval, task->remainingRepeats);
   strcat(buffer, buffer_2);
   return buffer;
@@ -198,7 +198,7 @@ char *LAS::scheduleToCharStr() {
   static char* buffer = new char[config.strSize];
   for (int index = 0; index < config.scheduleSize; index++) {
     static char indexBuffer[3];
-    snprintf(indexBuffer, sizeof(buffer), "\n%d:\n", index);
+    snprintf(indexBuffer, sizeof(char) * config.strSize, "\n%d:\n", index);
     strcat(buffer, indexBuffer);
     strcat(buffer, taskToCharStr(&schedule[index]));
   }
@@ -212,7 +212,7 @@ Task LAS::getTask(int index) {
 void LAS::printSchedule() {
   for (int index = 0; index < config.scheduleSize; index++) {
     char buffer[config.strSize];
-    snprintf(buffer, sizeof(buffer), "%d:", index);
+    snprintf(buffer, sizeof(char) * config.strSize, "%d:", index);
     logger.printline(buffer);
     logger.printline(taskToCharStr(&schedule[index]));
   }
